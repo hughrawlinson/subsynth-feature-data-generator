@@ -112,9 +112,10 @@ fun void selectOscillator2Waveform(float vol){
         vol => s2g.gain;
     }
 }
+chout <= "centroid,rms,rolloff,flux,o1t1g,o1t2g,o1t3g,o1t4g,o2t1g,o2t2g,o2t3g,o2t4g,q,cutoff" <=IO.newline();
 
 fun void logParametersAndFeatures(){
-    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= IO.newline();
+    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= "," <= s1g.gain <= "," <= t1g.gain <= "," <= sq1g.gain <= "," <= sw1g.gain  <= "," <= s2g.gain <= "," <= t2g.gain <= "," <= sq2g.gain <= "," <= sw2g.gain <= "," <= lpf.Q <= "," <= lpf.freq<= IO.newline();
 }
 
 fun void refilter(){
