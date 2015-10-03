@@ -1,3 +1,6 @@
+// print csv headers
+chout <= "centroid,rms,rolloff,flux,o1t1g,o1t2g,o1t3g,o1t4g,o2t1g,o2t2g,o2t3g,o2t4g,q,cutoff" <= IO.newline();
+
 //LPF lpf => FFT fft =^ Centroid c => dac;
 FFT fft =^ Centroid c => blackhole;
 fft =^ RMS r => blackhole;
@@ -83,13 +86,13 @@ fun void selectOscillator1Waveform(float vol){
         vol => s1g.gain;
     }
     if(oscSelection == 1){
-        vol => s1g.gain;
+        vol => t1g.gain;
     }
     if(oscSelection == 2){
-        vol => s1g.gain;
+        vol => sq1g.gain;
     }
     if(oscSelection == 3){
-        vol => s1g.gain;
+        vol => sw1g.gain;
     }
 }
 
@@ -112,10 +115,9 @@ fun void selectOscillator2Waveform(float vol){
         vol => s2g.gain;
     }
 }
-chout <= "centroid,rms,rolloff,flux,o1t1g,o1t2g,o1t3g,o1t4g,o2t1g,o2t2g,o2t3g,o2t4g,q,cutoff" <=IO.newline();
 
 fun void logParametersAndFeatures(){
-    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= "," <= s1g.gain <= "," <= t1g.gain <= "," <= sq1g.gain <= "," <= sw1g.gain  <= "," <= s2g.gain <= "," <= t2g.gain <= "," <= sq2g.gain <= "," <= sw2g.gain <= "," <= lpf.Q <= "," <= lpf.freq<= IO.newline();
+    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= "," <= s1g.gain() <= "," <= t1g.gain() <= "," <= sq1g.gain() <= "," <= sw1g.gain()  <= "," <= s2g.gain() <= "," <= t2g.gain() <= "," <= sq2g.gain() <= "," <= sw2g.gain() <= "," <= lpf.Q() <= "," <= lpf.freq() <= IO.newline();
 }
 
 fun void refilter(){
