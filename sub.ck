@@ -1,5 +1,5 @@
 // print csv headers
-chout <= "centroid,rms,rolloff,flux,o1t1g,o1t2g,o1t3g,o1t4g,o2t1g,o2t2g,o2t3g,o2t4g,q,cutoff" <= IO.newline();
+chout <= "centroid,rms,rolloff,flux,om,o1o,o2o,q,cutoff,detune" <= IO.newline();
 
 //LPF lpf => FFT fft =^ Centroid c => dac;
 FFT fft =^ Centroid c => blackhole;
@@ -10,9 +10,14 @@ fft =^ Flux f => blackhole;
 0 => int DEMO;
 8 => int FRAME_SIZE_EXPONENT;
 Math.pow(2,FRAME_SIZE_EXPONENT) $ int => int FRAME_SIZE;
-2 => int DETUNE_WIDTH;
+2 => float DETUNE_WIDTH;
 1 => float OVERALL_VOLUME;
 second / samp => float SAMP_RATE;
+
+0 => float om;
+0 => int o1o;
+0 => float o2v;
+0 => int o2o;
 
 LPF lpf => Gain mgain;
 OVERALL_VOLUME => mgain.gain;
@@ -42,7 +47,6 @@ SawOsc sw2 => Gain sw2g => lpf;
 //12 => int FRAME_SIZE_EXPONENT;
 
 fun void rejig(){
-	Math.random()/(Math.RANDOM_MAX/DETUNE_WIDTH) => detune;
 	setFreq(440);
 	regain();
     refilter();
@@ -50,6 +54,7 @@ fun void rejig(){
 
 fun void setFreq(float f){
 	setOsc1Freq(f);
+	Math.randomf()*DETUNE_WIDTH => detune;
 	setOsc2Freq(f+detune);
 }
 
@@ -68,12 +73,9 @@ fun void setOsc2Freq(float f){
 }
 
 fun void regain(){
-    selectOscillator1Waveform(Math.randomf());
-    selectOscillator2Waveform(Math.randomf());
-	Math.randomf() => s2g.gain;
-	Math.randomf() => t2g.gain;
-	Math.randomf() => sq2g.gain;
-	Math.randomf() => sw2g.gain;
+    Math.randomf() => om;
+    selectOscillator1Waveform(om);
+    selectOscillator2Waveform(1-om);
 }
 
 fun void selectOscillator1Waveform(float vol){
@@ -82,6 +84,7 @@ fun void selectOscillator1Waveform(float vol){
 	0 => sq1g.gain;
 	0 => sw1g.gain;
     Math.random2(0,3) => int oscSelection;
+    oscSelection => o1o;
     if(oscSelection == 0){
         vol => s1g.gain;
     }
@@ -102,22 +105,23 @@ fun void selectOscillator2Waveform(float vol){
 	0 => sq2g.gain;
 	0 => sw2g.gain;
     Math.random2(0,3) => int oscSelection;
+    oscSelection => o2o;
     if(oscSelection == 0){
         vol => s2g.gain;
     }
     if(oscSelection == 1){
-        vol => s2g.gain;
+        vol => t2g.gain;
     }
     if(oscSelection == 2){
-        vol => s2g.gain;
+        vol => sq2g.gain;
     }
     if(oscSelection == 3){
-        vol => s2g.gain;
+        vol => sw2g.gain;
     }
 }
 
 fun void logParametersAndFeatures(){
-    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= "," <= s1g.gain() <= "," <= t1g.gain() <= "," <= sq1g.gain() <= "," <= sw1g.gain()  <= "," <= s2g.gain() <= "," <= t2g.gain() <= "," <= sq2g.gain() <= "," <= sw2g.gain() <= "," <= lpf.Q() <= "," <= lpf.freq() <= IO.newline();
+    chout <= c.fval(0) * SAMP_RATE / 2 <= "," <= r.fval(0) <= "," <= ro.fval(0) <= "," <= f.fval(0) <= "," <= om <= "," <= o1o <= "," <= o2o <= "," <= lpf.Q() <= "," <= lpf.freq() <= "," <= detune<= IO.newline();
 }
 
 fun void refilter(){
