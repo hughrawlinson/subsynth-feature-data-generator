@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/hughrawlinson/itchy-octo-parakeet/issues"
   },
-  "homepage": "https://github.com/hughrawlinson/itchy-octo-parakeet#readme"
+  "homepage": "https://github.com/hughrawlinson/itchy-octo-parakeet#readme",
+  "dependencies": {
+    "line-by-line": "^0.1.4"
+  }
 }

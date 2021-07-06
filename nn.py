@@ -12,7 +12,7 @@ if __name__ == "__main__":
     with open('example_data.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            ds.addSample((float(row[0])/18000,float(row[1]),float(row[2]),float(row[3])/1.41), (float(row[4]),float(row[5])/3,float(row[6])/3,float(row[7])/5,float(row[8])/20000,float(row[9])/2))
+            ds.addSample((float(row[0]),float(row[1]),float(row[2]),float(row[3])), (float(row[4]),float(row[5]),float(row[6]),float(row[7]),float(row[8]),float(row[9])))
 
     trainer = BackpropTrainer(net, ds)
     while(True):
